@@ -11,15 +11,15 @@ public class Pawn extends Piece{
         //set pawn direction
         MoveResults returnObj = new MoveResults(x,y,positionX,positionY);
         int direction = team == 1 ? 1 : -1;
-        System.out.println("Direction: " + direction);
+        //System.out.println("Direction: " + direction);
         //check for valid index params
         if (!checkIndex(y) || !checkIndex(x)) {
-            System.out.println("invalid indexes");
+            //System.out.println("invalid indexes");
             return returnObj;
         }
         //check if queen promotion
         if ((getTeam() == 1 && y == 7)||(getTeam() == 2 && y == 0)){
-            System.out.println("Queen Promotion -Pawn" + getTeam() + " " +x+ " "+ y);
+            //System.out.println("Queen Promotion -Pawn" + getTeam() + " " +x+ " "+ y);
             returnObj.setPawnQueen(true);
         }
 
@@ -28,13 +28,13 @@ public class Pawn extends Piece{
             if (y == positionY + direction && board[x][y] == null) {
                 returnObj.setValidMove(true);
             }
-            System.out.println("Invalid single space move, wrong direction or blocked");
+            //System.out.println("Invalid single space move, wrong direction or blocked");
             return returnObj;
         }
         //check if a double space move off start row
         else if (x == positionX && Math.abs(y - positionY) == 2) {
             if (team == 1 && positionY == 1 && y == 3 && board[x][2] == null && board[x][3] == null) {
-                System.out.println("EnPassant move created for next turn");
+                //System.out.println("EnPassant move created for next turn");
                 returnObj.setValidMove(true);
                 returnObj.setEnPassant(true);
                 returnObj.setEnPassantVulnX(x);
@@ -44,7 +44,7 @@ public class Pawn extends Piece{
                 returnObj.setEnPassant(true);
                 returnObj.setEnPassantVulnX(x);
                 returnObj.setEnPassantVulnY(5);
-                System.out.println("EnPassant move created for next turn");
+                //System.out.println("EnPassant move created for next turn");
             }
         }
 
@@ -53,12 +53,13 @@ public class Pawn extends Piece{
             //verify there is an enemy piece to take
             // space empty or has same team piece, cannot attack move
             if ( y == positionY + direction ) { //pawn moving in correct direction
-                    System.out.println("Attack move");
+                    //System.out.println("Attack move");
                     returnObj.setValidMove(true);
                     returnObj.setAttackMove(true);
                 }
             else{
-            System.out.println("Invalid attack move - wrong direction");}
+            //System.out.println("Invalid attack move - wrong direction");
+                }
         }
         return returnObj;
     }

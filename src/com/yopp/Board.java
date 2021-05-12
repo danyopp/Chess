@@ -4,6 +4,7 @@ public final class Board {
 
     private Piece [] gamePlay = new Piece[33];
 
+    public static boolean printDetails = true;
     int en_passant_pawnX; //position of pawn
     int en_passant_pawnY;
     int en_passant_attackX; //position of vulnerable square behind pawn
@@ -156,12 +157,14 @@ public final class Board {
         if( gameBoard[x][y] == null){ return false; }
         if(!(gameBoard[x][y] instanceof King)){return false;}
         King piece = (King)gameBoard[x][y];
+        if(printDetails)System.out.println("Status of moved variable for King: " + piece.isMoved());
         if(piece.isMoved()){return false;}
         if(piece.getTeam() == 1 && newY == 0){
             if(newX == 6){
                 if (gameBoard[7][0] == null){return false;} //no piece
                 if (!(gameBoard[7][0] instanceof Rook)){return false;} //not a rook
-                if (gameBoard[7][0].getTeam() != piece.getTeam()) //rook from the other team
+                if (gameBoard[7][0].getTeam() != piece.getTeam()) {return false;}//rook from the other team
+                if(printDetails)System.out.println("Status of moved variable for Rook7-0: " + gameBoard[7][0].isMoved());
                 if (gameBoard[7][0].isMoved()){return false;} //rook has already moved
                 if (gameBoard[6][0] != null || gameBoard[5][0] != null){return false;} //pieces between king and rook
                 //need to check for check
@@ -170,8 +173,9 @@ public final class Board {
             if(newX == 2){
                 if (gameBoard[0][0] == null){return false;} //no piece
                 if (!(gameBoard[0][0] instanceof Rook)){return false;} //not a rook
-                if (gameBoard[0][0].getTeam() != piece.getTeam()) //rook from the other team
-                    if (gameBoard[0][0].isMoved()){return false;} //rook has already moved
+                if (gameBoard[0][0].getTeam() != piece.getTeam()) {return false;}//rook from the other team
+                if(printDetails)System.out.println("Status of moved variable for Rook7-0: " + gameBoard[0][0].isMoved());
+                if (gameBoard[0][0].isMoved()){return false;} //rook has already moved
                 if (gameBoard[1][0] != null || gameBoard[2][0] != null || gameBoard[3][0] != null){return false;} //pieces between king and rook
                 return true;
             }
@@ -181,16 +185,18 @@ public final class Board {
             if(newX == 6){
                 if (gameBoard[7][7] == null){return false;} //no piece
                 if (!(gameBoard[7][7] instanceof Rook)){return false;} //not a rook
-                if (gameBoard[7][7].getTeam() != piece.getTeam()) //rook from the other team
-                    if (gameBoard[7][7].isMoved()){return false;} //rook has already moved
+                if (gameBoard[7][7].getTeam() != piece.getTeam()){return false;} //rook from the other team
+                if(printDetails)System.out.println("Status of moved variable for Rook7-0: " + gameBoard[7][0].isMoved());
+                if (gameBoard[7][7].isMoved()){return false;} //rook has already moved
                 if (gameBoard[6][7] != null || gameBoard[7][5] != null){return false;} //pieces between king and rook
                 return true;
             }
             if(newX == 2){
                 if (gameBoard[0][7] == null){return false;} //no piece
                 if (!(gameBoard[0][7] instanceof Rook)){return false;} //not a rook
-                if (gameBoard[0][7].getTeam() != piece.getTeam()) //rook from the other team
-                    if (gameBoard[0][7].isMoved()){return false;} //rook has already moved
+                if (gameBoard[0][7].getTeam() != piece.getTeam()) {return false;} //rook from the other team
+                if(printDetails)System.out.println("Status of moved variable for Rook7-0: " + gameBoard[7][0].isMoved());
+                if (gameBoard[0][7].isMoved()){return false;} //rook has already moved
                 if (gameBoard[1][7] != null || gameBoard[2][7] != null || gameBoard[3][7] != null){return false;} //pieces between king and rook
                 return true;
             }
@@ -233,28 +239,27 @@ public final class Board {
     }
 
     public boolean testMove(int x, int y, int newX, int newY, int team){
-
         Piece [][] gameBoard = buildBoard();
         if(!checkIndex(x) || !checkIndex(y) || !checkIndex(newX) || !checkIndex(newY)) {
-            System.out.println("bad index");
+            if(printDetails)System.out.println("bad index");
             return false;}
         if(team != 1 && team != 2){
-            System.out.println("bad team");return false;}
+            if(printDetails)System.out.println("bad team");return false;}
         if(gameBoard[x][y] == null){
-            System.out.println("empty position");
+            if(printDetails)System.out.println("empty position");
             return false;
         }
         if(gameBoard[x][y].getTeam() != team ){
-            System.out.println("piece on wrong team");
+            if(printDetails)System.out.println("piece on wrong team");
             return false;}
 
         MoveResults m = gameBoard[x][y].isValidMove(gameBoard, newX, newY);
         if(!m.isValidMove()) {
-            System.out.println("object returned invalid move");
+            if(printDetails)System.out.println("object returned invalid move");
             return false;}
 
         if(m.isAttackMove()){
-            System.out.println("attack move");
+            if(printDetails)System.out.println("attack move");
 //          System.out.println(en_passant_attackX + " " + en_passant_attackY + " " + newX + " " + newY);
             if (newX == en_passant_attackX && newY == en_passant_attackY)
             { return true; }
@@ -263,43 +268,51 @@ public final class Board {
             else if (gameBoard[newX][newY].getTeam() == gameBoard[x][y].getTeam())
             { return false; }
         }
-        //Board tempBoard = copyBoard();
-       // tempBoard.makeMove(x, y, newX, newY, team);
-        // if(tempBoard.testForCheck(team)){return false;}
-        System.out.println("valid move");
+        //Test if moving keeps player in check
+        Board tempBoard = copyBoard();
+        tempBoard.makeMove(x, y, newX, newY, team);
+        if(tempBoard.testForCheck(team)){
+            if(printDetails)System.out.println("Player is still in check");
+            return false;}
         return true;
     }
 
     public void makeMove(int x, int y, int newX, int newY, int team){
         Piece [][] gameBoard = buildBoard();
-        MoveResults results = gameBoard[x][y].isValidMove(gameBoard, newX, newY);
+        MoveResults results;
+        if(printDetails){printDetails = false;
+        results = gameBoard[x][y].isValidMove(gameBoard, newX, newY);
+        printDetails = true;}
+        else{
+            results = gameBoard[x][y].isValidMove(gameBoard, newX, newY);
+        }
         //Remove en passant pawn
 
         if(isEnPassant(newX, newY)){
-            System.out.println("debug3");
+            if(printDetails)System.out.println("Move to en Passant vulnerable square detected");
             int id = gameBoard[en_passant_pawnX][en_passant_pawnY].getPieceID();
             capturePiece(id);
         }
         //remove other captured piece
 
         else if(isAttackMove(newX, newY)){
-            System.out.println("Debug4");
+            if(printDetails)System.out.println("Attacking move detected - space being moved to currently holds a piece");
             int id = gameBoard[newX][newY].getPieceID();
             capturePiece(id);
         }
         //Castle or move Pieces
 
         if(isCastle(x, y, newX, newY)){
-            System.out.println("Debug5");
+            if(printDetails)System.out.println("Move appears to match acceptable castling procedure");
             moveCastle(x, y, newX, newY);
         }
         else{
-            System.out.println("Debug6");
+            if(printDetails)System.out.println("Regular move detected");
             gameBoard[x][y].move(newX, newY);
         }
         //Promote a queen
         if(isQueenPromotion(newX, newY)){
-            System.out.println("Debug7");
+            if(printDetails)System.out.println("Pawn has moved to square across board and requires promotion");
             gameBoard = buildBoard();
             int id = gameBoard[newX][newY].getPieceID();
             int queenTeam = gameBoard[newX][newY].getTeam();
@@ -307,21 +320,21 @@ public final class Board {
         }
         //Set up enPassant values for next move
         if(results.isEnPassant()) {
-            System.out.println("Debug8");
+            if(printDetails)System.out.println("En passant is set for vulnerable next turn");
             en_passant_pawnX = newX;
             en_passant_pawnY = newY;
             en_passant_attackX = results.getEnPassantVulnX();
             en_passant_attackY = results.getEnPassantVulnY();
 
         }else{
-            System.out.println("Debug9");
+            if(printDetails)System.out.println("No en passant capture is available for next turn");
             en_passant_pawnX = -1;
             en_passant_pawnY = -1;
             en_passant_attackX = -1;
             en_passant_attackY = -1;
         }
     }
-
+    //Function tests all pieces on the other team to see if they can make a valid attack move on the king
     public boolean testForCheck(int player){
         Piece [][] board = buildBoard();
         Piece King;
@@ -333,6 +346,7 @@ public final class Board {
             if (i.getPositionX() == King.getPositionX() && i.getPositionY() ==King.getPositionY()){continue;}
             MoveResults results = i.isValidMove(board, King.getPositionX(), King.getPositionY());
             if (results.isValidMove() && results.isAttackMove() && i.getTeam() != player){
+                if (printDetails)System.out.println("Check found");
                 return true;
             }
         }
@@ -340,7 +354,7 @@ public final class Board {
     }
 
     public boolean isCheckMate( int playerInCheck) {
-
+        printDetails = false;
         King k = playerInCheck==1 ? (King)gamePlay[23] : (King)gamePlay[31];
         Piece [][] board = buildBoard();
         int x = k.getPositionX();
@@ -353,11 +367,12 @@ public final class Board {
                 if (board[i][j].getTeam() != playerInCheck) {continue;}
                 for(int a = 0; a < 8; a++){
                     for(int b = 0; b < 8; b++){
-                        System.out.println(i + " " + j + "->" + a + " " + b);
+//                        System.out.println(i + " " + j + "->" + a + " " + b);
                         Board c = copyBoard();
                         if(c.testMove(i,j,a,b,playerInCheck)){
                             c.makeMove(i,j,a,b, playerInCheck);
                             if(!c.testForCheck(playerInCheck)){
+                                printDetails = true;
                                 return false;
                                 }
                             }
@@ -365,6 +380,7 @@ public final class Board {
                 }
             }
         }
+        printDetails = true;
         return true;
     }
 

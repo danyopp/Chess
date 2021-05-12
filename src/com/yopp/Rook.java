@@ -2,7 +2,6 @@ package com.yopp;
 
 public class Rook extends Piece{
 
-    boolean moved;
 
     Rook(int team, int x, int y, int ID){
 
@@ -12,7 +11,7 @@ public class Rook extends Piece{
 
     void move(int x, int y){
 
-            moved = true; //used to determine if rook is available for castle move with king
+            this.moved = true; //used to determine if rook is available for castle move with king
             positionX = x;
             positionY = y;
     }

@@ -17,12 +17,13 @@ public class Main {
 
             int pieceX = 0, pieceY = 0, toX = 0, toY = 0;
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter piece X: ");
+            System.out.println("TO QUIT GAME, ENTER: '99'\nEnter piece X: ");
             boolean hasNextInt = scanner.hasNextInt();
             if(hasNextInt){
                 pieceX = scanner.nextInt();
                 scanner.nextLine();
             }
+            if(pieceX == 99){break;}
             System.out.println("Enter piece Y: ");
             hasNextInt = scanner.hasNextInt();
             if(hasNextInt){
@@ -43,20 +44,26 @@ public class Main {
             }
             System.out.println(pieceX + " " + pieceY + " " + toX + " " + toY);
 
-
-            boolean checkMate = b.isCheckMate(player);
-            System.out.println("CheckMate: " + checkMate);
+            Board.printDetails = true;
+            System.out.println("Testing Move Validity");
             boolean test = b.testMove(pieceX, pieceY, toX, toY, player);
-            System.out.println("Test: " + test);
             if(test) {
-                System.out.println("Debug1");
+                System.out.println("Making The Move");
+                Board.printDetails = false;
                 b.makeMove( pieceX, pieceY, toX, toY,player);
-                System.out.println("Debug2");
+                Board.printDetails = true;
                 player = Math.abs(player - 3);
-//                if (b.testForCheck(player)){
-//                    System.out.println("Check");
-//                    b.setCheck(true);
-//                }
+                Board.printDetails = false;
+                if (b.testForCheck(player)){
+                    System.out.println("Player " + player + " is in Check");
+                    b.setCheck(true);
+                }
+                else
+                {b.setCheck(false);}
+                if(b.isCheckMate(player)){
+                    System.out.println("CheckMate: Player " + player + " is in CheckMate \nGame Over! Thanks for Playing!");
+                    break;
+                }
             }
             else
             {

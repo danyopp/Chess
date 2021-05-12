@@ -19,6 +19,7 @@ public class Piece {
         positionX = x;
         positionY = y;
         pieceID = ID;
+        moved = false;
     }
 
     void move(int x, int y){
