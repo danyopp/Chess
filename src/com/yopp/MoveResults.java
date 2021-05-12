@@ -1,28 +1,33 @@
 package com.yopp;
 
-public class MoveResults {
 
+//THIS CLASS IS RETURNED WHEN AN PLAYER MOVE IS TESTED FOR VALIDITY
+//IT CONTAINS INFORMATION ON WHAT THE MOVE WAS, WHETHER IT IS ONE OF THE CHESS PIECE SPECIALTY MOVES,
+//IF THE MOVE IS CAPTURING A PIECE, AND IF THE MOVE IS VALID.
+public class MoveResults {
+    //LOCATION OF THE STARTING PIECE AND TARGET SQUARE
     private int startX;
     private int startY;
     private int endX;
     private int endY;
 
-    private boolean validMove;
-    private boolean pawnQueen;
-    private boolean attackMove;
+    private boolean validMove; //IS THE MOVE VALID
+    private boolean pawnQueen; //IS A PAWN BEING PROMOTED TO A QUEEN ON THIS MOVE
+    private boolean attackMove; //IS THIS MOVE CAPTURING ANOTHER PIECE
 
-    private boolean castleMove;
-    private int rookCastleStartX;
+    private boolean castleMove; //IS THIS MOVE A ROOK-KING CASTLE MOVE
+    private int rookCastleStartX; //ROOK STARTING AND ENDING LOCATION
     private int rookCastleStartY;
     private int rookCastleEndX;
-    private int rookCastleEndY;
+    private int rookCastleEndY; //NOTE: THE CASTLE IS ONLY INITIATED BY MOVING THE KING
 
-    private boolean enPassant;
-    private int enPassantVulnX;
+    private boolean enPassant; //IF A PAWN MOVED TWO SPACES IT IS VULNERABLE TO AN EN PASSANT CAPTURE
+    private int enPassantVulnX; //LOCATION OF THE EN PASSANT CAPTURE VULNERABLE SQUARE
     private int enPassantVulnY;
 
     MoveResults(){
     }
+
 
     MoveResults(int x, int y, int startX, int startY){
         this.startX = startX;

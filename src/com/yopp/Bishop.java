@@ -29,12 +29,11 @@ public class Bishop extends Piece{
             //make sure nothing is blocking the movement
             int incrementX = positionX < x ? 1 : -1;
             int incrementY = positionY < y ? 1 : -1;
-//            System.out.println(incrementX + " " + incrementY);
             for (int a = positionX + incrementX, b = positionY + incrementY; a != x;)
                 {
-                   // System.out.println("[a][b]= "+ a + " " + b);
                     if (board[a][b] != null)
-                    { return returnObj;}
+                    {
+                        return returnObj;}
                     a += incrementX;
                     b += incrementY;
                 }

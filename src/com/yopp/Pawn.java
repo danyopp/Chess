@@ -52,7 +52,7 @@ public class Pawn extends Piece{
         else if( Math.abs(positionX-x) == 1 && Math.abs(positionY-y) == 1) {
             //verify there is an enemy piece to take
             // space empty or has same team piece, cannot attack move
-            if ( y == positionY + direction ) { //pawn moving in correct direction
+            if ( y == positionY + direction && board[x][y].getTeam() != getTeam()) { //pawn moving in correct direction
                     //System.out.println("Attack move");
                     returnObj.setValidMove(true);
                     returnObj.setAttackMove(true);
